@@ -1,15 +1,13 @@
 <?php
 
-echo 'Hello world';
+var_dump(PHP_MAJOR_VERSION);
 
-echo '<pre>';
-print_r($_SERVER['REQUEST_URI']);
-echo '</pre>';
+if(PHP_MAJOR_VERSION < 8) {
+    die('PHP version 8.0 or higher is required');
+}
 
-echo '<pre>';
-print_r($_SERVER['QUERY_STRING']);
-echo '</pre>';
+require_once __DIR__ . '/../config/init.php';
+require_once ROOT . '/vendor/autoload.php';
 
-echo '<pre>';
-print_r($_GET);
-echo '</pre>';
+new Framework\Test();
+new App\Controllers\Test();
