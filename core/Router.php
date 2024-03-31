@@ -8,14 +8,12 @@ class Router
 
     public function __construct(public ?Request $request = null, public ?Response $response = null)
     {
-
     }
 
     public function getRoutes(): array
     {
         return $this->routes;
     }
-
 
     public function get($uri, $callback): void
     {
@@ -35,7 +33,7 @@ class Router
         $path = $this->request->getPath();
         $callback = $this->routes[$method]["/{$path}"] ?? false;
 
-        if($callback === false) {
+        if ($callback === false) {
             $this->response->setResponseCode(404);
             return 'Page not found';
         }

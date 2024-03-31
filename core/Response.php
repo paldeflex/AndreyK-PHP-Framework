@@ -6,6 +6,8 @@ class Response
 {
     public function setResponseCode(int $code): void
     {
-        http_response_code($code);
+        if (!headers_sent()) {
+            http_response_code($code);
+        }
     }
 }
