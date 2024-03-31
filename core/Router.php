@@ -2,6 +2,8 @@
 
 namespace Framework;
 
+use Exception;
+
 class Router
 {
     protected array $routes = [];
@@ -18,26 +20,31 @@ class Router
     public function get($uri, $callback): void
     {
         $uri = trim($uri, '/');
-        $this->routes['GET']["/{$uri}"] = $callback;
+        $this->routes['GET']["/$uri"] = $callback;
     }
 
     public function post($uri, $callback): void
     {
         $uri = trim($uri, '/');
-        $this->routes['POST']["/{$uri}"] = $callback;
+        $this->routes['POST']["/$uri"] = $callback;
     }
 
-    public function dispatch(): string
+    /**
+     * @throws Exception
+     */
+    public function dispatch(): void
     {
-        $method = $this->request->getMethod();
         $path = $this->request->getPath();
-        $callback = $this->routes[$method]["/{$path}"] ?? false;
-
-        if ($callback === false) {
+        $method = $this->request->getMethod();
+        $callback = $this->routes[$method]["/$path"] ?? null;
+        if (is_null($callback)) {
             $this->response->setResponseCode(404);
-            return 'Page not found';
+            view('errors/404');
+            return;
         }
-
-        return call_user_func($callback);
+        if (is_array($callback)) {
+            $callback[0] = new $callback[0]();
+        }
+        call_user_func($callback);
     }
 }
